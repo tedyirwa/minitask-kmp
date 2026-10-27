@@ -1,14 +1,14 @@
 # MiniTask KMP
 
-A simple task management app built with Kotlin, Jetpack Compose, and Kotlin Multiplatform.
+MiniTask is a simple task management app built with Kotlin, Jetpack Compose, and Kotlin Multiplatform (KMP).
 
-MiniTask is a small portfolio project demonstrating shared business logic, basic task management, and unit testing with Kotlin Multiplatform.
+This project is a learning foundation for understanding KMP project structure, shared business logic, state management with Kotlin Coroutines and StateFlow, and unit testing.
 
 ## Features
 
-- Add a task
-- Mark a task as completed or incomplete
-- Delete a task
+- Add tasks
+- Mark tasks as completed or incomplete
+- Delete tasks
 - Ignore blank task titles
 - Unit tests for task management logic
 
@@ -18,6 +18,7 @@ MiniTask is a small portfolio project demonstrating shared business logic, basic
 - **Kotlin Multiplatform (KMP)**
 - **Jetpack Compose**
 - **Material 3**
+- **Kotlin Coroutines and StateFlow**
 - **Gradle**
 - **Kotlin Test**
 
@@ -25,15 +26,19 @@ MiniTask is a small portfolio project demonstrating shared business logic, basic
 
 ```text
 MiniTask/
-├── androidApp/    # Android application
+├── androidApp/          # Android application
 ├── shared/
 │   └── src/
-│       ├── commonMain/   # Shared task models and business logic
-│       └── commonTest/   # Shared unit tests
-├── iosApp/        # Generated iOS application entry point
-├── gradle/        # Gradle wrapper configuration
+│       ├── commonMain/  # Shared models and task logic
+│       ├── commonTest/  # Shared unit tests
+│       ├── androidMain/ # Android-specific implementations
+│       └── jvmMain/     # JVM-specific implementations
+├── iosApp/              # iOS app entry point from the project template
+├── gradle/              # Gradle configuration and version catalog
 └── README.md
 ```
+
+The `shared` module contains the task model, repository, and state holder. The Android app uses this shared logic to manage the task list.
 
 ## Getting Started
 
@@ -41,32 +46,35 @@ MiniTask/
 
 - Android Studio
 - Android SDK
-- JDK compatible with the project's Gradle configuration
+- A compatible JDK for the project's Gradle configuration
 
-### Run the Android app
+### Run the Android App
 
-On Windows, run:
+Open the project in Android Studio, sync Gradle, and run the `androidApp` configuration on an Android device or emulator.
+
+Alternatively, build the debug APK from the project root on Windows:
 
 ```powershell
 .\gradlew.bat :androidApp:assembleDebug
 ```
 
-Or open the project in Android Studio, sync Gradle, and run the `androidApp` configuration on an Android device or emulator.
+### Run Shared Unit Tests
 
-### Run shared unit tests
-
-Run the shared tests supported by your local environment. For example, on Windows:
+To run the shared module's JVM tests on Windows:
 
 ```powershell
-.\gradlew.bat :shared:allTests
+.\gradlew.bat :shared:jvmTest
 ```
 
-## Notes
+## Current Limitations
 
-- Tasks are stored in memory and are not persisted after the app process is restarted.
-- The current project focuses on the Android app and shared Kotlin business logic.
-- The iOS application directory is retained from the generated Kotlin Multiplatform project template.
+- Tasks are stored in memory and are lost when the app process is restarted.
+- The app currently focuses on Android as its runnable user interface.
+- The iOS directory comes from the KMP project template; a fully implemented and verified iOS experience is not part of this project's scope.
+- The project uses a simple repository and state holder to introduce shared business logic; it does not implement a full Clean Architecture setup.
 
 ## Project Status
 
-Mini portfolio project — core task management functionality and shared business logic are implemented. Build, tests, and runtime behavior are validated during development.
+**Learning project — foundational KMP concepts implemented.**
+
+MiniTask demonstrates basic task management, shared Kotlin logic, state updates with StateFlow, and unit testing. It serves as a starting point for more complete Kotlin Multiplatform projects.
