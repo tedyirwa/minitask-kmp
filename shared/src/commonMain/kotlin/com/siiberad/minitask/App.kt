@@ -1,45 +1,25 @@
 
 package com.siiberad.minitask
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        val repository = remember { TaskRepository() }
-        val tasks = remember { mutableStateListOf<Task>() }
+        val stateHolder = remember { TaskStateHolder() }
+        val tasks by stateHolder.tasks.collectAsState()
         var input by remember { mutableStateOf("") }
-
-        fun refreshTasks() {
-            tasks.clear()
-            tasks.addAll(repository.getTasks())
-        }
 
         Column(
             modifier = Modifier
@@ -47,10 +27,7 @@ fun App() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                text = "MiniTask",
-                style = MaterialTheme.typography.headlineMedium
-            )
+            Text("MiniTask", style = MaterialTheme.typography.headlineMedium)
 
             OutlinedTextField(
                 value = input,
@@ -62,23 +39,17 @@ fun App() {
 
             Button(
                 onClick = {
-                    repository.addTask(input)
+                    stateHolder.addTask(input)
                     input = ""
-                    refreshTasks()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Tambah tugas")
             }
 
-            Text(
-                text = "Daftar tugas (${tasks.size})",
-                style = MaterialTheme.typography.titleMedium
-            )
+            Text("Daftar tugas (${tasks.size})")
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
+            LazyColumn {
                 items(tasks, key = { it.id }) { task ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -87,23 +58,14 @@ fun App() {
                         Checkbox(
                             checked = task.isCompleted,
                             onCheckedChange = {
-                                repository.toggleTask(task.id)
-                                refreshTasks()
+                                stateHolder.toggleTask(task.id)
                             }
                         )
 
-                        Text(
-                            text = task.title,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        Spacer(Modifier.width(4.dp))
+                        Text(task.title, modifier = Modifier.weight(1f))
 
                         TextButton(
-                            onClick = {
-                                repository.deleteTask(task.id)
-                                refreshTasks()
-                            }
+                            onClick = { stateHolder.deleteTask(task.id) }
                         ) {
                             Text("Hapus")
                         }

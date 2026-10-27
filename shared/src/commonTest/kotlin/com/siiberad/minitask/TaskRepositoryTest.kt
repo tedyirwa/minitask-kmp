@@ -51,4 +51,13 @@ class TaskRepositoryTest {
 
         assertTrue(repository.getTasks().isEmpty())
     }
+
+    @Test
+    fun stateHolderAddsTask() {
+        val stateHolder = TaskStateHolder()
+
+        stateHolder.addTask("Belajar KMP")
+
+        assertEquals("Belajar KMP", stateHolder.tasks.value.first().title)
+    }
 }
