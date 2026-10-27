@@ -59,6 +59,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+    jvm()
 }
 
 dependencies {
